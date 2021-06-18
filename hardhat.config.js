@@ -2,7 +2,6 @@ require('@nomiclabs/hardhat-ethers');
 require('@nomiclabs/hardhat-waffle');
 require('hardhat-deploy');
 require('hardhat-deploy-ethers');
-require('solidity-coverage');
 
 module.exports = {
     defaultNetwork: 'hardhat',
@@ -10,7 +9,7 @@ module.exports = {
         hardhat: {
             chainId: 31337,
             forking: {
-                url: 'https://eth-mainnet.alchemyapi.io/v2/Dpwj4UKTaHOGzK4UzVNGUxd-EmIM_NaJ',
+                url: 'https://rpc-mainnet.maticvigil.com/v1/405b7fb473a54514f9adec1999c5408f9eec116c',
             },
         },
     },
@@ -43,5 +42,19 @@ module.exports = {
     mocha: {
         timeout: 300000,
     },
-    solidity: '0.8.0',
+    solidity: {
+        version: '0.8.0',
+        settings: {
+            optimizer: {
+                enabled: true,
+                runs: 200,
+            },
+        },
+    },
+    paths: {
+        sources: './contracts',
+        tests: './test',
+        cache: './cache',
+        artifacts: './artifacts',
+    },
 };
