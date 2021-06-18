@@ -2,15 +2,15 @@ require('@nomiclabs/hardhat-ethers');
 require('@nomiclabs/hardhat-waffle');
 require('hardhat-deploy');
 require('hardhat-deploy-ethers');
+const key = require('./key.json').infura;
 
 module.exports = {
     defaultNetwork: 'hardhat',
     networks: {
         hardhat: {
-            chainId: 131,
-            // forking: {
-            //     url: 'https://rpc-mainnet.maticvigil.com/v1/405b7fb473a54514f9adec1999c5408f9eec116c',
-            // },
+            forking: {
+                url: `https://polygon-mainnet.infura.io/v3/${key}`,
+            },
         },
     },
     namedAccounts: {

@@ -32,7 +32,7 @@ contract Vault {
 
     }
 
-    function _allowance( address _addresToken, uint _amount) internal {
+    function _allowance( address _addresToken, uint _amount) internal view {
         require(IERC20(_addresToken).allowance(msg.sender, address(this)) < _amount,
         'insufficient funds');
     }
