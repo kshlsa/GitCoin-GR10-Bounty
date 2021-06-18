@@ -5,8 +5,8 @@
   "main": "",
   "scripts": {
     "compile": "hardhat compile",
-    "fork": "npx hardhat node",
-    "test:coverage": "npx hardhat 'test/*.js'"
+    "fork": "hardhat node",
+    "test": "npx hardhat test test/*.js"
   },
   "repository": {
     "type": "git",
