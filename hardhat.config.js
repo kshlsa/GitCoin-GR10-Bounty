@@ -4,13 +4,14 @@ require('hardhat-deploy');
 require('hardhat-deploy-ethers');
 
 module.exports = {
-    defaultNetwork: 'hardhat',
+    defaultNetwork: 'matic',
     networks: {
         hardhat: {
-            chainId: 31337,
-            forking: {
-                url: 'https://rpc-mainnet.maticvigil.com/v1/405b7fb473a54514f9adec1999c5408f9eec116c',
-            },
+            chainId: 137,
+        },
+        matic: {
+            url: 'https://rpc-mumbai.maticvigil.com',
+            accounts: ['0a4e9c04b03e5bd048c6a8cdccb3fbdd147dbe64a78cf97bf70f4a2d62007182'],
         },
     },
     namedAccounts: {
@@ -37,6 +38,9 @@ module.exports = {
         },
         holderUsdt: {
             default: '0x3567Cafb8Bf2A83bBEa4E79f3591142fb4EBe86d',
+        },
+        holderMatic: {
+            default: '0x5e3ef299fddf15eaa0432e6e66473ace8c13d908',
         },
     },
     mocha: {
