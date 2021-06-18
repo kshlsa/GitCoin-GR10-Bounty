@@ -6,16 +6,17 @@ exports.setTestContracts = deployments.createFixture(
         const {USDC, holderUSDC} = await getNamedAccounts();
 
         const Vault = await deployments.get('Vault');
-        const Strategy = await deployments.get('Strategy');
 
         const vault = await ethers.getContractAt(
             'Vault', Vault.address, holderUSDC);
-        const strategy = await ethers.getContractAt(
-            'Strategy', Strategy.address, holderUSDC);
+
+        const usdc = await ethers.getContractAt('MockERC20', USDC, holderUSDC);
 
         return {
             vault,
-            strategy,
+            usdc,
+            holderUSDC,
+            // strategy,
         };
     }
 );
