@@ -14,6 +14,9 @@ module.exports = {
         },
     },
     namedAccounts: {
+        MATIC: {
+            default: '0x0000000000000000000000000000000000001010',
+        },
         DAI: {
             default: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
         },
@@ -30,13 +33,16 @@ module.exports = {
             default: 0,
         },
         holderUSDC: {
-            default: '0x34965ba0ac2451a34a0471f04cca3f990b8dea27',
+            default: '0x160532d2536175d65c03b97b0630a9802c274dad',
         },
         holderDai: {
             default: '0x5A16552f59ea34E44ec81E58b3817833E9fD5436',
         },
         holderUsdt: {
             default: '0x3567Cafb8Bf2A83bBEa4E79f3591142fb4EBe86d',
+        },
+        holderMATIC: {
+            default: '0x986a2fca9eda0e06fbf7839b89bfc006ee2a23dd',
         },
     },
     mocha: {

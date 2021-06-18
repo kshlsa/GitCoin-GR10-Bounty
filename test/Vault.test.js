@@ -9,20 +9,24 @@ const {setTestContracts} = require('./tools/helper');
 describe('Vault test', () => {
     let vault;
     let usdc;
+    let matic;
     let holderUSDC;
-    const amount = 10e6;
+    let holderMATIC;
+    const amountUSDC = 10e6;
+    const amountMATIC = 100000000000000;
 
     beforeEach(async () => {
         const config = await setTestContracts();
         vault = config.vault;
         usdc = config.usdc;
+        matic = config.matic;
+        holderMATIC = config.holderMATIC;
         holderUSDC = config.holderUSDC;
     });
 
     it('Voult deposit usdc', async () => {
-        // console.log(vault);
-        // await usdc.transfer(vault.address, amount);
-        // console.log(usdc);
-        console.log(await usdc.name());
+        await matic.transfer(holderUSDC, amountUSDC);
+        const balance = await matic.balanceOf(holderUSDC);
+        console.log(balance.toString());
     });
 });
