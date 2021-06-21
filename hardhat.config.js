@@ -24,7 +24,7 @@ module.exports = {
             default: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
         },
         USDT: {
-            default: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+            default: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
         },
         deployer: {
             default: 0,
@@ -33,16 +33,13 @@ module.exports = {
             default: 0,
         },
         holderUSDC: {
-            default: '0x160532d2536175d65c03b97b0630a9802c274dad',
-        },
-        holderDai: {
-            default: '0x5A16552f59ea34E44ec81E58b3817833E9fD5436',
-        },
-        holderUsdt: {
-            default: '0x3567Cafb8Bf2A83bBEa4E79f3591142fb4EBe86d',
-        },
-        holderMATIC: {
             default: '0x986a2fca9eda0e06fbf7839b89bfc006ee2a23dd',
+        },
+        holderDAI: {
+            default: '0x293Ed38530005620e4B28600f196a97E1125dAAc',
+        },
+        holderUSDT: {
+            default: '0x1CC1C54314c7feC2c3020a40a6cD9D1C4A44ED90',
         },
     },
     mocha: {
