@@ -18,9 +18,12 @@ contract Vault {
     mapping(address => mapping(bytes32 => uint)) public depositerBalances;
 
     function deposit(uint _daiAmount, uint _usdcAmount, uint _usdtAmount) payable external {
-        _allowance(daiAddr, _daiAmount);
-        _allowance(usdcAddr, _usdcAmount);
-        _allowance(usdtAddr, _usdtAmount);
+         require(IERC20(daiAddr).allowance(msg.sender, address(this)) >= _daiAmount,
+        'insufficient funds');
+         require(IERC20(usdcAddr).allowance(msg.sender, address(this)) >= _usdcAmount,
+        'insufficient funds');
+         require(IERC20(usdtAddr).allowance(msg.sender, address(this)) >= _usdtAmount,
+        'insufficient funds');
 
         IERC20(daiAddr).transferFrom(msg.sender, address(this), _daiAmount);
         IERC20(usdcAddr).transferFrom(msg.sender, address(this), _usdcAmount);
@@ -32,9 +35,12 @@ contract Vault {
     }
 
     function withdraw(uint _daiAmount, uint _usdcAmount, uint _usdtAmount) external {
-        _checkBalanceUser(daiTicker, _daiAmount);
-        _checkBalanceUser(usdcTicker, _usdcAmount);
-        _checkBalanceUser(usdtTicker, _usdtAmount);
+        require(depositerBalances[msg.sender][daiTicker] >= _daiAmount,
+        'insufficient funds');
+        require(depositerBalances[msg.sender][usdcTicker] >= _usdcAmount,
+        'insufficient funds');
+        require(depositerBalances[msg.sender][usdtTicker] >= _usdtAmount,
+        'insufficient funds');
 
         IERC20(daiAddr).transfer(msg.sender, _daiAmount);
         IERC20(usdcAddr).transfer(msg.sender, _usdcAmount);
@@ -44,15 +50,4 @@ contract Vault {
         depositerBalances[msg.sender][usdcTicker] -= _usdcAmount;
         depositerBalances[msg.sender][usdtTicker] -= _usdtAmount;
     }
-
-    function _checkBalanceUser(bytes32 _tokenTicker, uint _amount) internal view {
-        require(depositerBalances[msg.sender][_tokenTicker] >= _amount,
-        'insufficient funds');
-    }
-
-    function _allowance(address _addresToken, uint _amount) internal view {
-        require(IERC20(_addresToken).allowance(msg.sender, address(this)) >= _amount,
-        'insufficient funds');
-    }
-
 }
