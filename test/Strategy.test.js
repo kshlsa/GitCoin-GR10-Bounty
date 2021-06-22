@@ -14,7 +14,7 @@ describe('Strategy test', () => {
     it('test1', async () => {
         const config = await setTestContracts();
         console.log('111111');
-        // strategyContract = config.strategy;
-        //        let t = await strategyContract.depositStablecoins(1, 2, 3);
+        strategyContract = config.strategy;
+        let t = await strategyContract.depositStablecoins(1, 2, 3);
     });
 });
