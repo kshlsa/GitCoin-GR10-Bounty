@@ -2,18 +2,21 @@ require('@nomiclabs/hardhat-ethers');
 require('@nomiclabs/hardhat-waffle');
 require('hardhat-deploy');
 require('hardhat-deploy-ethers');
+const key = require('./key.json').infura;
 
 module.exports = {
     defaultNetwork: 'hardhat',
     networks: {
         hardhat: {
-            chainId: 131,
-            // forking: {
-            //     url: 'https://rpc-mainnet.maticvigil.com/v1/405b7fb473a54514f9adec1999c5408f9eec116c',
-            // },
+            forking: {
+                url: `https://polygon-mainnet.infura.io/v3/${key}`,
+            },
         },
     },
     namedAccounts: {
+        MATIC: {
+            default: '0x0000000000000000000000000000000000001010',
+        },
         DAI: {
             default: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
         },
@@ -21,7 +24,7 @@ module.exports = {
             default: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
         },
         USDT: {
-            default: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+            default: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
         },
         deployer: {
             default: 0,
@@ -30,13 +33,13 @@ module.exports = {
             default: 0,
         },
         holderUSDC: {
-            default: '0x34965ba0ac2451a34a0471f04cca3f990b8dea27',
+            default: '0x986a2fca9eda0e06fbf7839b89bfc006ee2a23dd',
         },
-        holderDai: {
-            default: '0x5A16552f59ea34E44ec81E58b3817833E9fD5436',
+        holderDAI: {
+            default: '0x293Ed38530005620e4B28600f196a97E1125dAAc',
         },
-        holderUsdt: {
-            default: '0x3567Cafb8Bf2A83bBEa4E79f3591142fb4EBe86d',
+        holderUSDT: {
+            default: '0x1CC1C54314c7feC2c3020a40a6cD9D1C4A44ED90',
         },
         holderMatic: {
             default: '0x5e3ef299fddf15eaa0432e6e66473ace8c13d908',
