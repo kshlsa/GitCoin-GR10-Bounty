@@ -39,7 +39,9 @@ contract Strategy {
         aaveProtocol = IAaveLendingPool(aaveLendingPoollAddr);
     }
 
-    function depositStablecoins(uint _usdcAmount, uint _usdtAmount, uint _daiAmount) external {
+    function depositStablecoins(address sender, uint _usdcAmount, uint _usdtAmount, uint _daiAmount)
+        external {
+
         require(Coins[usdcTicker].token.balanceOf(address(this)) >= _usdcAmount,
                 'Insufficent balance of the USDC');
         require(Coins[usdtTicker].token.balanceOf(address(this)) >= _usdtAmount,
@@ -47,16 +49,12 @@ contract Strategy {
         require(Coins[daiTicker].token.balanceOf(address(this)) >= _daiAmount,
                 'Insufficent balance of the DAI');
 
-        console.log(Coins[aTokenTicker].token.balanceOf(address(this)), 'Before');
-
         Coins[usdcTicker].token.safeApprove(aaveLendingPoollAddr, _usdcAmount);
         Coins[usdtTicker].token.safeApprove(aaveLendingPoollAddr, _usdtAmount);
         Coins[daiTicker].token.safeApprove(aaveLendingPoollAddr, _daiAmount);
 
-        aaveProtocol.deposit(usdcAddr, _usdcAmount, msg.sender, 0);
-        aaveProtocol.deposit(usdtAddr, _usdtAmount, msg.sender, 0);
-        aaveProtocol.deposit(daiAddr, _daiAmount, msg.sender, 0);
-
-        console.log(Coins[aTokenTicker].token.balanceOf(address(this)), 'After');
+        aaveProtocol.deposit(usdcAddr, _usdcAmount, sender, 0);
+        aaveProtocol.deposit(usdtAddr, _usdtAmount, sender, 0);
+        aaveProtocol.deposit(daiAddr, _daiAmount, sender, 0);
     }
 }

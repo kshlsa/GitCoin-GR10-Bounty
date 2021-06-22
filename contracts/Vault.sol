@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 import 'hardhat/console.sol';
-import './interfaces/IStrategy.sol'
+import './interfaces/IStrategy.sol';
 
 contract Vault {
     address constant internal daiAddr = 0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063;
@@ -40,7 +40,7 @@ contract Vault {
         depositerBalances[msg.sender][usdcTicker] += _usdcAmount;
         depositerBalances[msg.sender][usdtTicker] += _usdtAmount;
 
-        strategy.depositStablecoins(_daiAmount, _usdcAmount, _usdtAmount);
+        strategy.depositStablecoins(msg.sender, _daiAmount, _usdcAmount, _usdtAmount);
     }
 
     function withdraw(uint _daiAmount, uint _usdcAmount, uint _usdtAmount) external {
