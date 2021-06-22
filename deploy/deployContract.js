@@ -7,10 +7,10 @@ module.exports = async ({getNamedAccounts, deployments}) => {
         log: true,
     });
 
-    // await deploy('Strategy', {
-    //     from: deployer,
-    //     log: true,
-    // });
+     await deploy('Strategy', {
+         from: deployer,
+         log: true,
+     });
 };
 
 module.exports.tags = ['main'];

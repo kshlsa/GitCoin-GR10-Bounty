@@ -41,6 +41,9 @@ module.exports = {
         holderUSDT: {
             default: '0x1CC1C54314c7feC2c3020a40a6cD9D1C4A44ED90',
         },
+        holderMatic: {
+            default: '0x5e3ef299fddf15eaa0432e6e66473ace8c13d908',
+        },
     },
     mocha: {
         timeout: 300000,

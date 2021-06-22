@@ -24,9 +24,10 @@ exports.setTestContracts = deployments.createFixture(
         } = await getNamedAccounts();
 
         const Vault = await deployments.get('Vault');
+        const vault = await ethers.getContractAt('Vault', Vault.address);
 
-        const vault = await ethers.getContractAt(
-            'Vault', Vault.address);
+        const Strategy = await deployments.get('Strategy');
+        const strategy = await ethers.getContractAt('Strategy', Strategy.address);
 
 
         const dai = await ethers.getContractAt('MockERC20', DAI);
@@ -35,6 +36,7 @@ exports.setTestContracts = deployments.createFixture(
 
         return {
             vault,
+            strategy,
             dai,
             usdc,
             usdt,
@@ -44,3 +46,4 @@ exports.setTestContracts = deployments.createFixture(
         };
     }
 );
+
