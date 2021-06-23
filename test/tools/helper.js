@@ -18,6 +18,7 @@ exports.setTestContracts = deployments.createFixture(
             DAI,
             USDT,
             USDC,
+            AaveToken,
             holderDAI,
             holderUSDC,
             holderUSDT,
@@ -26,17 +27,14 @@ exports.setTestContracts = deployments.createFixture(
         const Vault = await deployments.get('Vault');
         const vault = await ethers.getContractAt('Vault', Vault.address);
 
-        const Strategy = await deployments.get('Strategy');
-        const strategy = await ethers.getContractAt('Strategy', Strategy.address);
-
-
+        const aToken = await ethers.getContractAt('MockERC20', AaveToken);
         const dai = await ethers.getContractAt('MockERC20', DAI);
         const usdc = await ethers.getContractAt('MockERC20', USDC);
         const usdt = await ethers.getContractAt('MockERC20', USDT);
 
         return {
             vault,
-            strategy,
+            aToken,
             dai,
             usdc,
             usdt,

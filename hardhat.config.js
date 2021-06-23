@@ -26,6 +26,9 @@ module.exports = {
         USDT: {
             default: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
         },
+        AaveToken: {
+            default: '0x1d2a0E5EC8E5bBDCA5CB219e649B565d8e5c3360',
+        },
         deployer: {
             default: 0,
         },
