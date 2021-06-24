@@ -11,9 +11,9 @@ describe('Strategy test', () => {
     let dai;
     let usdc;
     let usdt;
-    let adai;
-    let ausdc;
-    let ausdt;
+    let amDai;
+    let amUsdc;
+    let amUsdt;
     let holderDAI;
     let holderUSDC;
     let holderUSDT;
@@ -27,9 +27,9 @@ describe('Strategy test', () => {
         dai = config.dai;
         usdc = config.usdc;
         usdt = config.usdt;
-        adai = config.adai;
-        ausdc = config.ausdc;
-        ausdt = config.ausdt;
+        amDai = config.amDai;
+        amUsdc = config.amUsdc;
+        amUsdt = config.amUsdt;
         holderDAI = await ethers.getSigner(config.holderDAI);
         holderUSDC = await ethers.getSigner(config.holderUSDC);
         holderUSDT = await ethers.getSigner(config.holderUSDT);
@@ -39,27 +39,27 @@ describe('Strategy test', () => {
         await usdt.connect(holderUSDT).transfer(holderUSDC.address, amount);
     });
 
-    it('Strategy receive aDAI', async () => {
+    it('Strategy receive amDAI', async () => {
         await dai.connect(holderUSDC).approve(vault.address, amount);
         await vault.connect(holderUSDC).deposit(amount, 0, 0);
 
-        balanceATokens = await adai.balanceOf(holderUSDC.address);
+        balanceATokens = await amDai.balanceOf(holderUSDC.address);
         balanceATokens.should.equal(amount.toString());
     });
 
-    it('Strategy receive aUSDC', async () => {
+    it('Strategy receive amUSDC', async () => {
         await usdc.connect(holderUSDC).approve(vault.address, amount);
         await vault.connect(holderUSDC).deposit(0, amount, 0);
 
-        balanceATokens = await ausdc.balanceOf(holderUSDC.address);
+        balanceATokens = await amUsdc.balanceOf(holderUSDC.address);
         balanceATokens.should.equal(amount.toString());
     });
 
-    it('Strategy receive aUSDT', async () => {
+    it('Strategy receive amUSDT', async () => {
         await usdt.connect(holderUSDC).approve(vault.address, amount);
         await vault.connect(holderUSDC).deposit(0, 0, amount);
 
-        balanceATokens = await ausdt.balanceOf(holderUSDC.address);
+        balanceATokens = await amUsdt.balanceOf(holderUSDC.address);
         balanceATokens.should.equal(amount.toString());
     });
 
@@ -70,12 +70,12 @@ describe('Strategy test', () => {
 
         await vault.connect(holderUSDC).deposit(amount, amount, amount);
 
-        const balanceADAI = await adai.balanceOf(holderUSDC.address);
-        const balanceAUSDC = await ausdc.balanceOf(holderUSDC.address);
-        const balanceAUSDT = await ausdt.balanceOf(holderUSDC.address);
+        const balanceAmDAI = await amDai.balanceOf(holderUSDC.address);
+        const balanceAmUSDC = await amUsdc.balanceOf(holderUSDC.address);
+        const balanceAmUSDT = await amUsdt.balanceOf(holderUSDC.address);
 
-        balanceADAI.should.equal(amount.toString());
-        balanceAUSDC.should.equal(amount.toString());
-        balanceAUSDT.should.equal(amount.toString());
+        balanceAmDAI.should.equal(amount.toString());
+        balanceAmUSDC.should.equal(amount.toString());
+        balanceAmUSDT.should.equal(amount.toString());
     });
 });

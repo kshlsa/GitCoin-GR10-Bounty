@@ -17,13 +17,13 @@ module.exports = {
         MATIC: {
             default: '0x0000000000000000000000000000000000001010',
         },
-        aDAI: {
+        amDAI: {
             default: '0x27F8D03b3a2196956ED754baDc28D73be8830A6e',
         },
-        aUSDC: {
+        amUSDC: {
             default: '0x1a13F4Ca1d028320A707D99520AbFefca3998b7F',
         },
-        aUSDT: {
+        amUSDT: {
             default: '0x60D55F02A771d515e077c9C2403a1ef324885CeC',
         },
         DAI: {

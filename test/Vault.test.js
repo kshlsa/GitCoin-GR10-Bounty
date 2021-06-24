@@ -8,13 +8,9 @@ const {setTestContracts, Ticker} = require('./tools/helper');
 
 describe('Vault test', () => {
     let vault;
-    let aToken;
     let dai;
     let usdc;
     let usdt;
-    let adai;
-    let ausdc;
-    let ausdt;
     let holderDAI;
     let holderUSDC;
     let holderUSDT;
@@ -24,13 +20,9 @@ describe('Vault test', () => {
     beforeEach(async () => {
         const config = await setTestContracts();
         vault = config.vault;
-        aToken = config.aToken;
         dai = config.dai;
         usdc = config.usdc;
         usdt = config.usdt;
-        adai = config.adai;
-        ausdc = config.ausdc;
-        ausdt = config.ausdt;
         holderDAI = await ethers.getSigner(config.holderDAI);
         holderUSDC = await ethers.getSigner(config.holderUSDC);
         holderUSDT = await ethers.getSigner(config.holderUSDT);
