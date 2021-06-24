@@ -25,7 +25,6 @@ contract Strategy {
         Coins[Constant.DAI_TICKER] = Token(Constant.DAI_TICKER, IERC20(Constant.DAI_ADDRESS));
         Coins[Constant.USDC_TICKER] = Token(Constant.USDC_TICKER, IERC20(Constant.USDC_ADDRESS));
         Coins[Constant.USDT_TICKER] = Token(Constant.USDT_TICKER, IERC20(Constant.USDT_ADDRESS));
-        Coins[Constant.A_TOKEN_TICKER] = Token(Constant.A_TOKEN_TICKER, IERC20(Constant.A_TOKEN_ADDRESS));
 
         aaveProtocol = IAaveLendingPool(Constant.AAVE_LEND_POOL_ADDRESS);
     }
@@ -42,13 +41,13 @@ contract Strategy {
         Coins[Constant.DAI_TICKER].token.transferFrom(msg.sender, address(this), _daiAmount);
         Coins[Constant.USDC_TICKER].token.transferFrom(msg.sender, address(this), _usdcAmount);
         Coins[Constant.USDT_TICKER].token.transferFrom(msg.sender, address(this), _usdtAmount);
-        
+
         Coins[Constant.DAI_TICKER].token.safeApprove(Constant.AAVE_LEND_POOL_ADDRESS, _daiAmount);
         Coins[Constant.USDC_TICKER].token.safeApprove(Constant.AAVE_LEND_POOL_ADDRESS, _usdcAmount);
         Coins[Constant.USDT_TICKER].token.safeApprove(Constant.AAVE_LEND_POOL_ADDRESS, _usdtAmount);
-        
+
         if(_daiAmount > 0){
-            aaveProtocol.deposit(Constant.DAI_ADDRESS, _daiAmount, msg.sender, 0);
+            aaveProtocol.deposit(Constant.DAI_ADDRESS, _daiAmount, sender, 0);
         }
         if(_usdcAmount > 0){
             aaveProtocol.deposit(Constant.USDC_ADDRESS, _usdcAmount, sender, 0);

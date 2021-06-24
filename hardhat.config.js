@@ -17,6 +17,15 @@ module.exports = {
         MATIC: {
             default: '0x0000000000000000000000000000000000001010',
         },
+        aDAI: {
+            default: '0x27F8D03b3a2196956ED754baDc28D73be8830A6e',
+        },
+        aUSDC: {
+            default: '0x1a13F4Ca1d028320A707D99520AbFefca3998b7F',
+        },
+        aUSDT: {
+            default: '0x60D55F02A771d515e077c9C2403a1ef324885CeC',
+        },
         DAI: {
             default: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
         },
@@ -25,9 +34,6 @@ module.exports = {
         },
         USDT: {
             default: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
-        },
-        AaveToken: {
-            default: '0x1d2a0E5EC8E5bBDCA5CB219e649B565d8e5c3360',
         },
         deployer: {
             default: 0,
@@ -43,9 +49,6 @@ module.exports = {
         },
         holderUSDT: {
             default: '0x1CC1C54314c7feC2c3020a40a6cD9D1C4A44ED90',
-        },
-        holderMatic: {
-            default: '0x5e3ef299fddf15eaa0432e6e66473ace8c13d908',
         },
     },
     mocha: {

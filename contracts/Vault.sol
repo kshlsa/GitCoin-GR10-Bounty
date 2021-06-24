@@ -47,19 +47,6 @@ contract Vault {
     }
 
     function withdraw(uint _daiAmount, uint _usdcAmount, uint _usdtAmount) external {
-        require(depositerBalances[msg.sender][Constant.DAI_TICKER] >= _daiAmount,
-        'insufficient funds');
-        require(depositerBalances[msg.sender][Constant.USDC_TICKER] >= _usdcAmount,
-        'insufficient funds');
-        require(depositerBalances[msg.sender][Constant.USDT_TICKER] >= _usdtAmount,
-        'insufficient funds');
-
-        IERC20(Constant.DAI_ADDRESS).transfer(msg.sender, _daiAmount);
-        IERC20(Constant.USDC_ADDRESS).transfer(msg.sender, _usdcAmount);
-        IERC20(Constant.USDT_ADDRESS).transfer(msg.sender, _usdtAmount);
-
-        depositerBalances[msg.sender][Constant.DAI_TICKER] -= _daiAmount;
-        depositerBalances[msg.sender][Constant.USDC_TICKER] -= _usdcAmount;
-        depositerBalances[msg.sender][Constant.USDT_TICKER] -= _usdtAmount;
+      
     }
 }
