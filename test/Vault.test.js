@@ -15,7 +15,7 @@ describe('Vault test', () => {
     let holderUSDC;
     let holderUSDT;
     let balance;
-    const amount = 10000;
+    const amount = 100000;
 
     beforeEach(async () => {
         const config = await setTestContracts();
@@ -27,6 +27,7 @@ describe('Vault test', () => {
         holderUSDC = await ethers.getSigner(config.holderUSDC);
         holderUSDT = await ethers.getSigner(config.holderUSDT);
 
+        // transfer of tokens to the address holderUSDC
         await dai.connect(holderDAI).transfer(holderUSDC.address, amount);
         await usdt.connect(holderUSDT).transfer(holderUSDC.address, amount);
     });
@@ -38,7 +39,6 @@ describe('Vault test', () => {
         balance = await vault.depositerBalances(holderUSDC.address, Ticker.dai);
         balance.should.equal(amount.toString());
     });
-
 
     it('Voult deposit usdc', async () => {
         await usdc.connect(holderUSDC).approve(vault.address, amount);
@@ -74,56 +74,6 @@ describe('Vault test', () => {
 
     it('Voult deposit error insufficient funds', async () => {
         await vault.connect(holderUSDC).deposit(amount, amount, amount)
-            .should.be.rejectedWith('insufficient funds');
-    });
-
-    it('Voult withdraw dai', async () => {
-        await dai.connect(holderUSDC).approve(vault.address, amount);
-        await vault.connect(holderUSDC).deposit(amount, 0, 0);
-        await vault.connect(holderUSDC).withdraw(amount, 0, 0);
-
-        balance = await vault.depositerBalances(holderUSDC.address, Ticker.dai);
-        balance.should.equal('0');
-    });
-
-
-    it('Voult withdraw usdc', async () => {
-        await usdc.connect(holderUSDC).approve(vault.address, amount);
-        await vault.connect(holderUSDC).deposit(0, amount, 0);
-        await vault.connect(holderUSDC).withdraw(0, amount, 0);
-
-        balance = await vault.depositerBalances(holderUSDC.address, Ticker.usdc);
-        balance.should.equal('0');
-    });
-
-    it('Voult withdraw usdt', async () => {
-        await usdt.connect(holderUSDC).approve(vault.address, amount);
-        await vault.connect(holderUSDC).deposit(0, 0, amount);
-        await vault.connect(holderUSDC).withdraw(0, 0, amount);
-
-        balance = await vault.depositerBalances(holderUSDC.address, Ticker.usdt);
-        balance.should.equal('0');
-    });
-
-    it('Voult withdraw of three currencies', async () => {
-        await dai.connect(holderUSDC).approve(vault.address, amount);
-        await usdc.connect(holderUSDC).approve(vault.address, amount);
-        await usdt.connect(holderUSDC).approve(vault.address, amount);
-
-        await vault.connect(holderUSDC).deposit(amount, amount, amount);
-        await vault.connect(holderUSDC).withdraw(amount, amount, amount);
-
-        const balanceDAI = await vault.depositerBalances(holderUSDC.address, Ticker.dai);
-        const balanceUSDC = await vault.depositerBalances(holderUSDC.address, Ticker.usdc);
-        const balanceUSDT = await vault.depositerBalances(holderUSDC.address, Ticker.usdt);
-
-        balanceDAI.should.equal('0');
-        balanceUSDC.should.equal('0');
-        balanceUSDT.should.equal('0');
-    });
-
-    it('Voult withdraw error insufficient funds', async () => {
-        await vault.connect(holderUSDC).withdraw(amount, amount, amount)
             .should.be.rejectedWith('insufficient funds');
     });
 });

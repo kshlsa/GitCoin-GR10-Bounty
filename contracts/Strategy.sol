@@ -5,20 +5,11 @@ import 'hardhat/console.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 
+import {AddressAndTickers as Constant} from './helpers/AddressAndTickers.sol';
 import './Vault.sol';
 import './interfaces/IAaveLendingPool.sol';
 
 contract Strategy {
-    address constant internal usdcAddr = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174;
-    bytes32 constant internal usdcTicker = 'usdc';
-    address constant internal usdtAddr = 0xc2132D05D31c914a87C6611C10748AEb04B58e8F;
-    bytes32 constant internal usdtTicker = 'usdt';
-    address constant internal daiAddr = 0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063;
-    bytes32 constant internal daiTicker = 'dai';
-    address constant internal aTokenAddr = 0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063;
-    bytes32 constant internal aTokenTicker = 'atoken';
-
-    address constant internal aaveLendingPoollAddr = 0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf;
     IAaveLendingPool aaveProtocol;
 
     using SafeERC20 for IERC20;
@@ -31,30 +22,38 @@ contract Strategy {
     mapping(bytes32 => Token) public Coins;
 
     constructor() {
-        Coins[usdcTicker] = Token(usdcTicker, IERC20(usdcAddr));
-        Coins[usdtTicker] = Token(usdtTicker, IERC20(usdtAddr));
-        Coins[daiTicker] = Token(daiTicker, IERC20(daiAddr));
-        Coins[aTokenTicker] = Token(aTokenTicker, IERC20(aTokenAddr));
+        Coins[Constant.DAI_TICKER] = Token(Constant.DAI_TICKER, IERC20(Constant.DAI_ADDRESS));
+        Coins[Constant.USDC_TICKER] = Token(Constant.USDC_TICKER, IERC20(Constant.USDC_ADDRESS));
+        Coins[Constant.USDT_TICKER] = Token(Constant.USDT_TICKER, IERC20(Constant.USDT_ADDRESS));
 
-        aaveProtocol = IAaveLendingPool(aaveLendingPoollAddr);
+        aaveProtocol = IAaveLendingPool(Constant.AAVE_LEND_POOL_ADDRESS);
     }
 
-    function depositStablecoins(address sender, uint _usdcAmount, uint _usdtAmount, uint _daiAmount)
+    function depositStablecoins(address sender, uint _daiAmount, uint _usdcAmount, uint _usdtAmount)
         external {
-
-        require(Coins[usdcTicker].token.balanceOf(address(this)) >= _usdcAmount,
-                'Insufficent balance of the USDC');
-        require(Coins[usdtTicker].token.balanceOf(address(this)) >= _usdtAmount,
-                'Insufficent balance of the USDT');
-        require(Coins[daiTicker].token.balanceOf(address(this)) >= _daiAmount,
+        require(Coins[Constant.DAI_TICKER].token.allowance(msg.sender, address(this)) >= _daiAmount,
                 'Insufficent balance of the DAI');
+        require(Coins[Constant.USDC_TICKER].token.allowance(msg.sender, address(this)) >= _usdcAmount,
+                'Insufficent balance of the USDC');
+        require(Coins[Constant.USDT_TICKER].token.allowance(msg.sender, address(this)) >= _usdtAmount,
+                'Insufficent balance of the USDT');
 
-        Coins[usdcTicker].token.safeApprove(aaveLendingPoollAddr, _usdcAmount);
-        Coins[usdtTicker].token.safeApprove(aaveLendingPoollAddr, _usdtAmount);
-        Coins[daiTicker].token.safeApprove(aaveLendingPoollAddr, _daiAmount);
+        Coins[Constant.DAI_TICKER].token.transferFrom(msg.sender, address(this), _daiAmount);
+        Coins[Constant.USDC_TICKER].token.transferFrom(msg.sender, address(this), _usdcAmount);
+        Coins[Constant.USDT_TICKER].token.transferFrom(msg.sender, address(this), _usdtAmount);
 
-        aaveProtocol.deposit(usdcAddr, _usdcAmount, sender, 0);
-        aaveProtocol.deposit(usdtAddr, _usdtAmount, sender, 0);
-        aaveProtocol.deposit(daiAddr, _daiAmount, sender, 0);
+        Coins[Constant.DAI_TICKER].token.safeApprove(Constant.AAVE_LEND_POOL_ADDRESS, _daiAmount);
+        Coins[Constant.USDC_TICKER].token.safeApprove(Constant.AAVE_LEND_POOL_ADDRESS, _usdcAmount);
+        Coins[Constant.USDT_TICKER].token.safeApprove(Constant.AAVE_LEND_POOL_ADDRESS, _usdtAmount);
+
+        if(_daiAmount > 0){
+            aaveProtocol.deposit(Constant.DAI_ADDRESS, _daiAmount, sender, 0);
+        }
+        if(_usdcAmount > 0){
+            aaveProtocol.deposit(Constant.USDC_ADDRESS, _usdcAmount, sender, 0);
+        }
+        if(_usdtAmount > 0){
+            aaveProtocol.deposit(Constant.USDT_ADDRESS, _usdtAmount, sender, 0);
+        }
     }
 }

@@ -17,6 +17,15 @@ module.exports = {
         MATIC: {
             default: '0x0000000000000000000000000000000000001010',
         },
+        amDAI: {
+            default: '0x27F8D03b3a2196956ED754baDc28D73be8830A6e',
+        },
+        amUSDC: {
+            default: '0x1a13F4Ca1d028320A707D99520AbFefca3998b7F',
+        },
+        amUSDT: {
+            default: '0x60D55F02A771d515e077c9C2403a1ef324885CeC',
+        },
         DAI: {
             default: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
         },
@@ -40,9 +49,6 @@ module.exports = {
         },
         holderUSDT: {
             default: '0x1CC1C54314c7feC2c3020a40a6cD9D1C4A44ED90',
-        },
-        holderMatic: {
-            default: '0x5e3ef299fddf15eaa0432e6e66473ace8c13d908',
         },
     },
     mocha: {
