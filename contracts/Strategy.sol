@@ -8,9 +8,11 @@ import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 import {AddressAndTickers as Constant} from './helpers/AddressAndTickers.sol';
 import './Vault.sol';
 import './interfaces/IAaveLendingPool.sol';
+import './interfaces/IIncentivesController.sol';
 
 contract Strategy {
     IAaveLendingPool aaveProtocol;
+    IIncentivesController contractRewards;
 
     using SafeERC20 for IERC20;
 
@@ -25,8 +27,11 @@ contract Strategy {
         Coins[Constant.DAI_TICKER] = Token(Constant.DAI_TICKER, IERC20(Constant.DAI_ADDRESS));
         Coins[Constant.USDC_TICKER] = Token(Constant.USDC_TICKER, IERC20(Constant.USDC_ADDRESS));
         Coins[Constant.USDT_TICKER] = Token(Constant.USDT_TICKER, IERC20(Constant.USDT_ADDRESS));
+        Coins[Constant.W_MATIC_TICKER] = Token(Constant.W_MATIC_TICKER, IERC20(Constant.W_MATIC_ADDRESS));
+        Coins[Constant.AM_W_MATIC_TICKER] = Token(Constant.AM_W_MATIC_TICKER, IERC20(Constant.AM_W_MATIC_ADDRESS));
 
         aaveProtocol = IAaveLendingPool(Constant.AAVE_LEND_POOL_ADDRESS);
+        contractRewards = IIncentivesController(Constant.INCENTIVES_CONTROLLER_ADDRESS);
     }
 
     function depositStablecoins(address sender, uint _daiAmount, uint _usdcAmount, uint _usdtAmount)
@@ -55,5 +60,9 @@ contract Strategy {
         if(_usdtAmount > 0){
             aaveProtocol.deposit(Constant.USDT_ADDRESS, _usdtAmount, sender, 0);
         }
+    }
+
+    function showRewardsBalance(address[] calldata coins, address sender) external view returns(uint){
+        return contractRewards.getRewardsBalance(coins, sender);
     }
 }
