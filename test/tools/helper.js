@@ -29,6 +29,8 @@ exports.setTestContracts = deployments.createFixture(
         const Vault = await deployments.get('Vault');
         const vault = await ethers.getContractAt('Vault', Vault.address);
 
+        const Strategy = await deployments.get('Strategy');
+        const strategy = await ethers.getContractAt('Strategy', Strategy.address);
 
         const dai = await ethers.getContractAt('MockERC20', DAI);
         const usdc = await ethers.getContractAt('MockERC20', USDC);
@@ -39,6 +41,7 @@ exports.setTestContracts = deployments.createFixture(
 
         return {
             vault,
+            strategy,
             dai,
             usdc,
             usdt,
@@ -52,3 +55,9 @@ exports.setTestContracts = deployments.createFixture(
     }
 );
 
+exports.advanceNBlock = async () => {
+    const minute = 60000;
+    const time = Date.now() + minute;
+    await ethers.provider.send('evm_setNextBlockTimestamp', [time]);
+    await ethers.provider.send('evm_mine');
+};

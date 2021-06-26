@@ -4,10 +4,11 @@ const chai = require('chai');
 const {solidity} = require('ethereum-waffle');
 chai.use(solidity).use(require('chai-as-promised')).should();
 
-const {setTestContracts} = require('./tools/helper');
+const {setTestContracts, advanceNBlock} = require('./tools/helper');
 
 describe('Strategy test', () => {
     let vault;
+    let strategy;
     let dai;
     let usdc;
     let usdt;
@@ -23,6 +24,7 @@ describe('Strategy test', () => {
     beforeEach(async () => {
         const config = await setTestContracts();
         vault = config.vault;
+        strategy = config.strategy;
         aToken = config.aToken;
         dai = config.dai;
         usdc = config.usdc;
@@ -63,19 +65,29 @@ describe('Strategy test', () => {
         balanceATokens.should.equal(amount.toString());
     });
 
-    it('Strategy receive of three currencies', async () => {
+    it('Strategy to show the balance of rewards', async () => {
         await dai.connect(holderUSDC).approve(vault.address, amount);
         await usdc.connect(holderUSDC).approve(vault.address, amount);
         await usdt.connect(holderUSDC).approve(vault.address, amount);
 
         await vault.connect(holderUSDC).deposit(amount, amount, amount);
 
-        const balanceAmDAI = await amDai.balanceOf(holderUSDC.address);
-        const balanceAmUSDC = await amUsdc.balanceOf(holderUSDC.address);
-        const balanceAmUSDT = await amUsdt.balanceOf(holderUSDC.address);
+        const minutes = 60;
+        for (let i = 0; i < minutes; i++) {
+            await advanceNBlock();
+        }
 
-        balanceAmDAI.should.equal(amount.toString());
-        balanceAmUSDC.should.equal(amount.toString());
-        balanceAmUSDT.should.equal(amount.toString());
+        const rewards = Number(await strategy.showRewardsBalance(
+            [amDai.address, amUsdc.address, amUsdt.address],
+            holderUSDC.address));
+
+
+        rewards.should.satisfy((num) => {
+            if (num > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        });
     });
 });
