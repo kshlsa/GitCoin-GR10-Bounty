@@ -19,7 +19,9 @@ describe('Strategy test', () => {
     let holderUSDC;
     let holderUSDT;
     let balanceATokens;
-    const amount = 100000;
+    const amountDai = 30e6;
+    const amountUsdc = 30e6;
+    const amountUsdt = 50e6;
 
     beforeEach(async () => {
         const config = await setTestContracts();
@@ -35,10 +37,6 @@ describe('Strategy test', () => {
         holderDAI = await ethers.getSigner(config.holderDAI);
         holderUSDC = await ethers.getSigner(config.holderUSDC);
         holderUSDT = await ethers.getSigner(config.holderUSDT);
-
-        // transfer of tokens to the address holderUSDC
-        await dai.connect(holderDAI).transfer(holderUSDC.address, amount);
-        await usdt.connect(holderUSDT).transfer(holderUSDC.address, amount);
     });
 
     it('Strategy receive amDAI', async () => {
@@ -89,5 +87,21 @@ describe('Strategy test', () => {
                 return false;
             }
         });
+    });
+
+    it.only('Strategy borrow', async () => {
+        const balanceUsdtBefore = await dai.balanceOf(holderDAI.address);
+        const approveUsdt = amountUsdt + amountDai + amountUsdc;
+        const sum = ethers.utils.parseEther('130', 18);
+
+        await dai.connect(holderDAI).approve(vault.address, sum);
+        await usdc.connect(holderDAI).approve(vault.address, 250e6);
+        await usdt.connect(holderDAI).approve(vault.address, 400e6);
+
+        await vault.connect(holderDAI).deposit(sum, 90e6, 90e6);
+
+        const balanceUsdtAfter = await dai.balanceOf(holderDAI.address);
+
+        console.log(balanceUsdtBefore.toString(), balanceUsdtAfter.toString());
     });
 });

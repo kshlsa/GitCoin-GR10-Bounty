@@ -19,7 +19,7 @@ library AddressAndTickers {
     address constant public AM_DAI_ADDRESS = 0x27F8D03b3a2196956ED754baDc28D73be8830A6e;
     address constant public AM_USDC_ADDRESS = 0x1a13F4Ca1d028320A707D99520AbFefca3998b7F;
     address constant public AM_USDT_ADDRESS = 0x60D55F02A771d515e077c9C2403a1ef324885CeC;
-    address constant public AM_W_MATIC_ADDRESS = 0x8dF3aad3a84da6b69A4DA8aeC3eA40d9091B2Ac4;
-    address constant public AAVE_LEND_POOL_ADDRESS = 0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf;
     address constant public INCENTIVES_CONTROLLER_ADDRESS = 0x357D51124f59836DeD84c8a1730D72B749d8BC23;
+    address constant public PROTOCOL_DATA_PROVIDER = 0x7551b5D2763519d4e37e8B81929D336De671d46d;
+    address constant public LP_ADDRESS_PROVIDER = 0xd05e3E715d945B59290df0ae8eF85c1BdB684744;
 }
