@@ -11,7 +11,7 @@ import './interfaces/IIncentivesController.sol';
 import './interfaces/ILendingPoolAddressesProvider.sol';
 
 contract Strategy {
-    IAaveLendingPool aaveLendingPool;
+    IAaveLendingPool lendingPool;
     IIncentivesController contractRewards;
     ILendingPoolAddressesProvider lpAddrProvider;
 
@@ -28,7 +28,7 @@ contract Strategy {
         lpAddrProvider = ILendingPoolAddressesProvider(Constant.LP_ADDRESS_PROVIDER);
         address lendigPoolAddress = lpAddrProvider.getLendingPool();
 
-        aaveLendingPool = IAaveLendingPool(lendigPoolAddress);
+        lendingPool = IAaveLendingPool(lendigPoolAddress);
 
 
         Coins[Constant.DAI_TICKER] = Token(Constant.DAI_TICKER, IERC20(Constant.DAI_ADDRESS));
@@ -55,18 +55,18 @@ contract Strategy {
         Coins[Constant.USDC_TICKER].token.transferFrom(msg.sender, address(this), _usdcAmount);
         Coins[Constant.USDT_TICKER].token.transferFrom(msg.sender, address(this), _usdtAmount);
 
-        Coins[Constant.DAI_TICKER].token.safeApprove(address(aaveLendingPool), _daiAmount);
-        Coins[Constant.USDC_TICKER].token.safeApprove(address(aaveLendingPool), _usdcAmount);
-        Coins[Constant.USDT_TICKER].token.safeApprove(address(aaveLendingPool), _usdtAmount);
+        Coins[Constant.DAI_TICKER].token.safeApprove(address(lendingPool), _daiAmount);
+        Coins[Constant.USDC_TICKER].token.safeApprove(address(lendingPool), _usdcAmount);
+        Coins[Constant.USDT_TICKER].token.safeApprove(address(lendingPool), _usdtAmount);
 
         if(_daiAmount > 0){
-            aaveLendingPool.deposit(Constant.DAI_ADDRESS, _daiAmount, address(this), 0);
+            lendingPool.deposit(Constant.DAI_ADDRESS, _daiAmount, address(this), 0);
         }
         if(_usdcAmount > 0){
-            aaveLendingPool.deposit(Constant.USDC_ADDRESS, _usdcAmount, address(this), 0);
+            lendingPool.deposit(Constant.USDC_ADDRESS, _usdcAmount, address(this), 0);
         }
         if(_usdtAmount > 0){
-            aaveLendingPool.deposit(Constant.USDT_ADDRESS, _usdtAmount, address(this), 0);
+            lendingPool.deposit(Constant.USDT_ADDRESS, _usdtAmount, address(this), 0);
         }
 
         // TODO Calculate a collateral here for borrowing!!!
@@ -78,7 +78,7 @@ contract Strategy {
 
     function borrowAave(uint _usdtAmount, uint256 _interestRateMode, uint16 _referralCode,
         address _borrower) external {
-        aaveLendingPool.borrow(Constant.USDT_ADDRESS,
+        lendingPool.borrow(Constant.USDT_ADDRESS,
                                _usdtAmount,
                                _interestRateMode,
                                _referralCode,

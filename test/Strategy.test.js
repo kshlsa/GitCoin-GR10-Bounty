@@ -19,7 +19,7 @@ describe('Strategy test', () => {
     let holderUSDC;
     let holderUSDT;
     let balanceATokens;
-    const amountDai = 30e6;
+    const amountDai = 30e18;
     const amountUsdc = 30e6;
     const amountUsdt = 50e6;
 
