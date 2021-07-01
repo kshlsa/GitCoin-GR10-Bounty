@@ -69,9 +69,9 @@ contract Strategy {
             lendingPool.deposit(Constant.USDT_ADDRESS, _usdtAmount, address(this), 0);
         }
 
-        uint _usdtAmountBorrow = getAmountBorrow(_daiAmount, _usdcAmount);
+        uint usdtAmountBorrow = _getAmountBorrow(_daiAmount, _usdcAmount);
 
-        this.borrowAave(_usdtAmountBorrow, 2, 0, address(this));
+        this.borrowAave(usdtAmountBorrow, 2, 0, address(this));
     }
 
 
@@ -84,11 +84,12 @@ contract Strategy {
                                _borrower);
     }
 
-    function getAmountBorrow(uint _daiTokenAmount , uint _usdcTokenAmount) internal view returns(uint){
-        uint powerDAI = 1e18;
-        uint powerUSD = 1e6;
+    function _getAmountBorrow(uint _daiTokenAmount , uint _usdcTokenAmount) internal view returns(uint){
+        uint DAIfraction = 1e18;
+        uint USDCfraction = 1e6;
 
-        return (_daiTokenAmount / powerDAI + _usdcTokenAmount / powerUSD) / 2 * powerUSD;
+        uint USDTfraction = (_daiTokenAmount / DAIfraction + _usdcTokenAmount / USDCfraction) / 2 * USDCfraction;
+        return USDTfraction;
     }
 
     function showRewardsBalance(address[] calldata _coins, address _sender) external view returns(uint){
