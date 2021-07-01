@@ -1,18 +1,19 @@
-//SPDX-License-Identifier: MIT
+ //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import 'hardhat/console.sol';
-import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 
 import {AddressAndTickers as Constant} from './helpers/AddressAndTickers.sol';
 import './Vault.sol';
 import './interfaces/IAaveLendingPool.sol';
 import './interfaces/IIncentivesController.sol';
+import './interfaces/ILendingPoolAddressesProvider.sol';
 
 contract Strategy {
-    IAaveLendingPool aaveProtocol;
+    IAaveLendingPool lendingPool;
     IIncentivesController contractRewards;
+    ILendingPoolAddressesProvider lpAddrProvider;
 
     using SafeERC20 for IERC20;
 
@@ -24,17 +25,24 @@ contract Strategy {
     mapping(bytes32 => Token) public Coins;
 
     constructor() {
+        lpAddrProvider = ILendingPoolAddressesProvider(Constant.LP_ADDRESS_PROVIDER);
+        address lendigPoolAddress = lpAddrProvider.getLendingPool();
+
+        lendingPool = IAaveLendingPool(lendigPoolAddress);
+
+
         Coins[Constant.DAI_TICKER] = Token(Constant.DAI_TICKER, IERC20(Constant.DAI_ADDRESS));
         Coins[Constant.USDC_TICKER] = Token(Constant.USDC_TICKER, IERC20(Constant.USDC_ADDRESS));
         Coins[Constant.USDT_TICKER] = Token(Constant.USDT_TICKER, IERC20(Constant.USDT_ADDRESS));
-        Coins[Constant.W_MATIC_TICKER] = Token(Constant.W_MATIC_TICKER, IERC20(Constant.W_MATIC_ADDRESS));
-        Coins[Constant.AM_W_MATIC_TICKER] = Token(Constant.AM_W_MATIC_TICKER, IERC20(Constant.AM_W_MATIC_ADDRESS));
 
-        aaveProtocol = IAaveLendingPool(Constant.AAVE_LEND_POOL_ADDRESS);
+        Coins[Constant.AM_DAI_TICKER] = Token(Constant.AM_DAI_TICKER, IERC20(Constant.AM_DAI_ADDRESS));
+        Coins[Constant.AM_USDC_TICKER] = Token(Constant.AM_USDC_TICKER, IERC20(Constant.AM_USDC_ADDRESS));
+        Coins[Constant.AM_USDT_TICKER] = Token(Constant.AM_USDT_TICKER, IERC20(Constant.AM_USDT_ADDRESS));
+
         contractRewards = IIncentivesController(Constant.INCENTIVES_CONTROLLER_ADDRESS);
     }
 
-    function depositStablecoins(address sender, uint _daiAmount, uint _usdcAmount, uint _usdtAmount)
+    function depositStablecoins(uint _daiAmount, uint _usdcAmount, uint _usdtAmount)
         external {
         require(Coins[Constant.DAI_TICKER].token.allowance(msg.sender, address(this)) >= _daiAmount,
                 'Insufficent balance of the DAI');
@@ -47,22 +55,38 @@ contract Strategy {
         Coins[Constant.USDC_TICKER].token.transferFrom(msg.sender, address(this), _usdcAmount);
         Coins[Constant.USDT_TICKER].token.transferFrom(msg.sender, address(this), _usdtAmount);
 
-        Coins[Constant.DAI_TICKER].token.safeApprove(Constant.AAVE_LEND_POOL_ADDRESS, _daiAmount);
-        Coins[Constant.USDC_TICKER].token.safeApprove(Constant.AAVE_LEND_POOL_ADDRESS, _usdcAmount);
-        Coins[Constant.USDT_TICKER].token.safeApprove(Constant.AAVE_LEND_POOL_ADDRESS, _usdtAmount);
+        Coins[Constant.DAI_TICKER].token.safeApprove(address(lendingPool), _daiAmount);
+        Coins[Constant.USDC_TICKER].token.safeApprove(address(lendingPool), _usdcAmount);
+        Coins[Constant.USDT_TICKER].token.safeApprove(address(lendingPool), _usdtAmount);
 
         if(_daiAmount > 0){
-            aaveProtocol.deposit(Constant.DAI_ADDRESS, _daiAmount, sender, 0);
+            lendingPool.deposit(Constant.DAI_ADDRESS, _daiAmount, address(this), 0);
         }
         if(_usdcAmount > 0){
-            aaveProtocol.deposit(Constant.USDC_ADDRESS, _usdcAmount, sender, 0);
+            lendingPool.deposit(Constant.USDC_ADDRESS, _usdcAmount, address(this), 0);
         }
         if(_usdtAmount > 0){
-            aaveProtocol.deposit(Constant.USDT_ADDRESS, _usdtAmount, sender, 0);
+            lendingPool.deposit(Constant.USDT_ADDRESS, _usdtAmount, address(this), 0);
         }
+
+        // TODO Calculate a collateral here for borrowing!!!
+        uint _usdtAmountBorrow = _daiAmount + _usdcAmount;
+
+        this.borrowAave(2, 2, 0, address(this));
     }
 
-    function showRewardsBalance(address[] calldata coins, address sender) external view returns(uint){
-        return contractRewards.getRewardsBalance(coins, sender);
+
+    function borrowAave(uint _usdtAmount, uint256 _interestRateMode, uint16 _referralCode,
+        address _borrower) external {
+        lendingPool.borrow(Constant.USDT_ADDRESS,
+                               _usdtAmount,
+                               _interestRateMode,
+                               _referralCode,
+                               _borrower);
+    }
+
+    function showRewardsBalance(address[] calldata _coins, address _sender) external view returns(uint){
+        return contractRewards.getRewardsBalance(_coins, _sender);
     }
 }
+

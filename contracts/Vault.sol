@@ -43,10 +43,10 @@ contract Vault {
         IERC20(Constant.USDC_ADDRESS).approve(address(strategy), _usdcAmount);
         IERC20(Constant.USDT_ADDRESS).approve(address(strategy), _usdtAmount);
 
-        strategy.depositStablecoins(msg.sender, _daiAmount, _usdcAmount, _usdtAmount);
+        strategy.depositStablecoins(_daiAmount, _usdcAmount, _usdtAmount);
     }
 
     function withdraw(uint _daiAmount, uint _usdcAmount, uint _usdtAmount) external {
-      
+
     }
 }

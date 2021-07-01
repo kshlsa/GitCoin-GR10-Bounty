@@ -9,8 +9,14 @@ module.exports = {
     networks: {
         hardhat: {
             forking: {
-                url: `https://polygon-mainnet.infura.io/v3/${key}`,
+                url: `https://polygon-mainnet.infura.io/v3/fcf6ee08de0546aaaf117306d4689175`,
             },
+        },
+        matic: {
+            url: 'https://polygon-mumbai.infura.io/v3/fcf6ee08de0546aaaf117306d4689175',
+            accounts: ['db044b90f63bd3f74bfd4e2d8b6e4ebaee6b609d65cee32d4e1109e87bce6cb5'],
+            gas: 2100000,
+            gasPrice: 8000000000,
         },
     },
     namedAccounts: {
@@ -33,7 +39,7 @@ module.exports = {
             default: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
         },
         USDT: {
-            default: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
+            default: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
         },
         deployer: {
             default: 0,
@@ -41,14 +47,14 @@ module.exports = {
         user: {
             default: 0,
         },
-        holderUSDC: {
-            default: '0x986a2fca9eda0e06fbf7839b89bfc006ee2a23dd',
-        },
         holderDAI: {
-            default: '0x293Ed38530005620e4B28600f196a97E1125dAAc',
+            default: '0x6a74d88D6B009a26f801beA483248B0318E3c7aF',
+        },
+        holderUSDC: {
+            default: '0x0D31CB017573b8398b283b068ce7Cf53C3De6d60',
         },
         holderUSDT: {
-            default: '0x1CC1C54314c7feC2c3020a40a6cD9D1C4A44ED90',
+            default: '0x6a74d88D6B009a26f801beA483248B0318E3c7aF',
         },
     },
     mocha: {
@@ -70,3 +76,4 @@ module.exports = {
         artifacts: './artifacts',
     },
 };
+//db044b90f63bd3f74bfd4e2d8b6e4ebaee6b609d65cee32d4e1109e87bce6cb5
