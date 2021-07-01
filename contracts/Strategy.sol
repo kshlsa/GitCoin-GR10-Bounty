@@ -71,7 +71,9 @@ contract Strategy {
 
         uint usdtAmountBorrow = _getAmountBorrow(_daiAmount, _usdcAmount);
 
-        this.borrowAave(usdtAmountBorrow, 2, 0, address(this));
+        if(usdtAmountBorrow > 0){
+            this.borrowAave(usdtAmountBorrow, 2, 0, address(this));
+        }
     }
 
 

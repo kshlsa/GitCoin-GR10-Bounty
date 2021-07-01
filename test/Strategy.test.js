@@ -19,7 +19,7 @@ describe('Strategy test', () => {
     let holderUSDC;
     let holderUSDT;
     let balanceATokens;
-    const amountDai = 30e18;
+    const amountDai = ethers.utils.parseEther('130', 18);;
     const amountUsdc = 30e6;
     const amountUsdt = 50e6;
 
@@ -40,35 +40,38 @@ describe('Strategy test', () => {
     });
 
     it('Strategy receive amDAI', async () => {
-        await dai.connect(holderUSDC).approve(vault.address, amount);
-        await vault.connect(holderUSDC).deposit(amount, 0, 0);
+        await dai.connect(holderDAI).approve(vault.address, amountDai);
+        await usdc.connect(holderDAI).approve(vault.address, amountUsdc);
+        await usdt.connect(holderDAI).approve(vault.address, amountUsdt);
 
-        balanceATokens = await amDai.balanceOf(holderUSDC.address);
-        balanceATokens.should.equal(amount.toString());
+        await vault.connect(holderDAI).deposit(amountDai, amountUsdc, amountUsdt);
+
+        const balanceATokens = await amDai.balanceOf(strategy.address);
+        balanceATokens.should.equal(amountDai.toString());
     });
 
     it('Strategy receive amUSDC', async () => {
-        await usdc.connect(holderUSDC).approve(vault.address, amount);
-        await vault.connect(holderUSDC).deposit(0, amount, 0);
+        await usdc.connect(holderDAI).approve(vault.address, amountUsdc);
+        await vault.connect(holderDAI).deposit(0, amountUsdc, 0);
 
-        balanceATokens = await amUsdc.balanceOf(holderUSDC.address);
-        balanceATokens.should.equal(amount.toString());
+        balanceATokens = await amUsdc.balanceOf(strategy.address);
+        balanceATokens.should.equal(amountUsdc.toString());
     });
 
     it('Strategy receive amUSDT', async () => {
-        await usdt.connect(holderUSDC).approve(vault.address, amount);
-        await vault.connect(holderUSDC).deposit(0, 0, amount);
+        await usdt.connect(holderDAI).approve(vault.address, amountUsdt);
+        await vault.connect(holderDAI).deposit(0, 0, amountUsdt);
 
-        balanceATokens = await amUsdt.balanceOf(holderUSDC.address);
-        balanceATokens.should.equal(amount.toString());
+        balanceATokens = await amUsdt.balanceOf(strategy.address);
+        balanceATokens.should.equal(amountUsdt.toString());
     });
 
     it('Strategy to show the balance of rewards', async () => {
-        await dai.connect(holderUSDC).approve(vault.address, amount);
-        await usdc.connect(holderUSDC).approve(vault.address, amount);
-        await usdt.connect(holderUSDC).approve(vault.address, amount);
+        await dai.connect(holderDAI).approve(vault.address, amountDai);
+        await usdc.connect(holderDAI).approve(vault.address, amountUsdc);
+        await usdt.connect(holderDAI).approve(vault.address, amountUsdt);
 
-        await vault.connect(holderUSDC).deposit(amount, amount, amount);
+        await vault.connect(holderDAI).deposit(amountDai, amountUsdc, amountUsdt);
 
         const minutes = 60;
         for (let i = 0; i < minutes; i++) {
@@ -77,7 +80,7 @@ describe('Strategy test', () => {
 
         const rewards = Number(await strategy.showRewardsBalance(
             [amDai.address, amUsdc.address, amUsdt.address],
-            holderUSDC.address));
+            strategy.address));
 
 
         rewards.should.satisfy((num) => {
@@ -89,19 +92,21 @@ describe('Strategy test', () => {
         });
     });
 
-    it.only('Strategy borrow', async () => {
-        const balanceUsdtBefore = await dai.balanceOf(holderDAI.address);
-        const approveUsdt = amountUsdt + amountDai + amountUsdc;
-        const sum = ethers.utils.parseEther('130', 18);
+    it('Strategy borrow', async () => {
+        await dai.connect(holderDAI).approve(vault.address, amountDai);
+        await usdc.connect(holderDAI).approve(vault.address, amountUsdc);
+        await usdt.connect(holderDAI).approve(vault.address, amountUsdt);
 
-        await dai.connect(holderDAI).approve(vault.address, sum);
-        await usdc.connect(holderDAI).approve(vault.address, 250e6);
-        await usdt.connect(holderDAI).approve(vault.address, 400e6);
+        await vault.connect(holderDAI).deposit(amountDai, amountUsdc, amountUsdt);
 
-        await vault.connect(holderDAI).deposit(sum, 90e6, 90e6);
+        const balanceUsdtAfterBorrow = await usdt.balanceOf(strategy.address);
 
-        const balanceUsdtAfter = await dai.balanceOf(holderDAI.address);
-
-        console.log(balanceUsdtBefore.toString(), balanceUsdtAfter.toString());
+        balanceUsdtAfterBorrow.should.satisfy((num) => {
+            if (num > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        });
     });
 });
