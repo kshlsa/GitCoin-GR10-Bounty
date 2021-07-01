@@ -84,12 +84,12 @@ contract Strategy {
                                _borrower);
     }
 
-    function _getAmountBorrow(uint _daiTokenAmount , uint _usdcTokenAmount) internal view returns(uint){
+    function _getAmountBorrow(uint _daiTokenAmount , uint _usdcTokenAmount) internal pure returns(uint){
         uint DAIfraction = 1e18;
         uint USDCfraction = 1e6;
+        uint USDTfraction = 1e6;
 
-        uint USDTfraction = (_daiTokenAmount / DAIfraction + _usdcTokenAmount / USDCfraction) / 2 * USDCfraction;
-        return USDTfraction;
+        return (_daiTokenAmount / DAIfraction + _usdcTokenAmount / USDCfraction) / 2 * USDTfraction;
     }
 
     function showRewardsBalance(address[] calldata _coins, address _sender) external view returns(uint){
