@@ -13,4 +13,13 @@ interface IAaveLendingPool {
                     _interestRateMode,
                     uint16 _referralCode,
                     address _onBehalfOf) external;
+
+    function repay(address _asset,
+                   uint256 _amount,
+                   uint256 _rateMode,
+                   address _onBehalfOf) external returns (uint256 paybackAmount);
+
+    function withdraw(address _asset,
+                      uint256 _amount,
+                      address _to) external returns (uint256 amountToWithdraw);
 }

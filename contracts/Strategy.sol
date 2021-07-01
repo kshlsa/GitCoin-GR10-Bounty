@@ -114,6 +114,12 @@ contract Strategy {
         return (_daiTokenAmount / DAIfraction + _usdcTokenAmount / USDCfraction) / 2 * USDTfraction;
     }
 
+    function repay(address _asset, uint256 _amount, uint256 _rateMode, address _onBehalfOf) external returns (uint256) {
+    }
+
+    function withdraw(address _asset, uint256 _amount,address _to) external returns (uint256){
+    }
+
     function showRewardsBalance(address[] calldata _coins, address _sender) external view returns(uint){
         return contractRewards.getRewardsBalance(_coins, _sender);
     }

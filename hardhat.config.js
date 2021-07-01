@@ -32,6 +32,9 @@ module.exports = {
         amUSDT: {
             default: '0x60D55F02A771d515e077c9C2403a1ef324885CeC',
         },
+        am3CRV: {
+            default: '0xE7a24EF0C5e95Ffb0f6684b813A78F2a3AD7D171',
+        },
         DAI: {
             default: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
         },
