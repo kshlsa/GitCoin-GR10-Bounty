@@ -9,11 +9,13 @@ import './Vault.sol';
 import './interfaces/IAaveLendingPool.sol';
 import './interfaces/IIncentivesController.sol';
 import './interfaces/ILendingPoolAddressesProvider.sol';
+import './interfaces/ICurve.sol';
 
 contract Strategy {
     IAaveLendingPool lendingPool;
     IIncentivesController contractRewards;
     ILendingPoolAddressesProvider lpAddrProvider;
+    ICurveAavePool curveProtocol;
 
     using SafeERC20 for IERC20;
 
@@ -30,6 +32,8 @@ contract Strategy {
 
         lendingPool = IAaveLendingPool(lendigPoolAddress);
 
+        curveProtocol = ICurveAavePool(Constant.CURVE_PROTOCOL);
+
 
         Coins[Constant.DAI_TICKER] = Token(Constant.DAI_TICKER, IERC20(Constant.DAI_ADDRESS));
         Coins[Constant.USDC_TICKER] = Token(Constant.USDC_TICKER, IERC20(Constant.USDC_ADDRESS));
@@ -38,6 +42,7 @@ contract Strategy {
         Coins[Constant.AM_DAI_TICKER] = Token(Constant.AM_DAI_TICKER, IERC20(Constant.AM_DAI_ADDRESS));
         Coins[Constant.AM_USDC_TICKER] = Token(Constant.AM_USDC_TICKER, IERC20(Constant.AM_USDC_ADDRESS));
         Coins[Constant.AM_USDT_TICKER] = Token(Constant.AM_USDT_TICKER, IERC20(Constant.AM_USDT_ADDRESS));
+        Coins[Constant.AM_3CRV_TICKER] = Token(Constant.AM_3CRV_TICKER, IERC20(Constant.AM_3CRV_ADDRESS));
 
         contractRewards = IIncentivesController(Constant.INCENTIVES_CONTROLLER_ADDRESS);
     }
@@ -83,10 +88,24 @@ contract Strategy {
                                _interestRateMode,
                                _referralCode,
                                _borrower);
+        uint[3] memory coinAmount;
+        coinAmount[0] = 0;
+        coinAmount[1] = 0;
+        coinAmount[2] = _usdtAmount;
+
+        this.depositToCurve(coinAmount, _usdtAmount);
+    }
+
+    function depositToCurve(uint[3] calldata _coins, uint _amount) external {
+        Coins[Constant.USDT_TICKER].token.safeApprove(Constant.CURVE_PROTOCOL, _amount);
+
+        uint crvAmount = curveProtocol.add_liquidity(_coins, _amount, true);
+
+        // TODO Important to transfer 3crv to user
+        // Coins[Constant.AM_3CRV_TICKER].token.transfer(USER_ADDR, crvAmount);
     }
 
     function showRewardsBalance(address[] calldata _coins, address _sender) external view returns(uint){
         return contractRewards.getRewardsBalance(_coins, _sender);
     }
 }
-
