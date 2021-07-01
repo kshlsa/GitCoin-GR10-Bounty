@@ -69,10 +69,9 @@ contract Strategy {
             lendingPool.deposit(Constant.USDT_ADDRESS, _usdtAmount, address(this), 0);
         }
 
-        // TODO Calculate a collateral here for borrowing!!!
-        uint _usdtAmountBorrow = _daiAmount + _usdcAmount;
+        uint usdtAmountBorrow = _getAmountBorrow(_daiAmount, _usdcAmount);
 
-        this.borrowAave(2, 2, 0, address(this));
+        this.borrowAave(usdtAmountBorrow, 2, 0, address(this));
     }
 
 
@@ -83,6 +82,14 @@ contract Strategy {
                                _interestRateMode,
                                _referralCode,
                                _borrower);
+    }
+
+    function _getAmountBorrow(uint _daiTokenAmount , uint _usdcTokenAmount) internal pure returns(uint){
+        uint DAIfraction = 1e18;
+        uint USDCfraction = 1e6;
+        uint USDTfraction = 1e6;
+
+        return (_daiTokenAmount / DAIfraction + _usdcTokenAmount / USDCfraction) / 2 * USDTfraction;
     }
 
     function showRewardsBalance(address[] calldata _coins, address _sender) external view returns(uint){
