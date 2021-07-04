@@ -4,11 +4,7 @@ exports.Ticker = {
     'dai': ethers.utils.formatBytes32String('dai'),
     'usdc': ethers.utils.formatBytes32String('usdc'),
     'usdt': ethers.utils.formatBytes32String('usdt'),
-    'curve': ethers.utils.formatBytes32String('a3CRV'),
-    'yearn': ethers.utils.formatBytes32String('saCRV'),
-    'SusdPool': ethers.utils.formatBytes32String('crvPlain3andSUSD'),
-    'DusdPool': ethers.utils.formatBytes32String('dusd3CRV'),
-    'Invalid_Ticker': ethers.utils.formatBytes32String('Invalid_Ticker'),
+    'curve': ethers.utils.formatBytes32String('am3CRV'),
 };
 
 exports.setTestContracts = deployments.createFixture(
@@ -18,6 +14,7 @@ exports.setTestContracts = deployments.createFixture(
             amDAI,
             amUSDC,
             amUSDT,
+            am3CRV,
             DAI,
             USDT,
             USDC,
@@ -38,6 +35,7 @@ exports.setTestContracts = deployments.createFixture(
         const amDai = await ethers.getContractAt('MockERC20', amDAI);
         const amUsdc = await ethers.getContractAt('MockERC20', amUSDC);
         const amUsdt = await ethers.getContractAt('MockERC20', amUSDT);
+        const am3crv = await ethers.getContractAt('MockERC20', am3CRV);
 
         return {
             vault,
@@ -48,6 +46,7 @@ exports.setTestContracts = deployments.createFixture(
             amDai,
             amUsdc,
             amUsdt,
+            am3crv,
             holderDAI,
             holderUSDC,
             holderUSDT,

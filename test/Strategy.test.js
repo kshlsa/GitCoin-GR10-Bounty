@@ -15,6 +15,7 @@ describe('Strategy test', () => {
     let amDai;
     let amUsdc;
     let amUsdt;
+    let am3crv;
     let holderDAI;
     let holderUSDC;
     let holderUSDT;
@@ -34,6 +35,7 @@ describe('Strategy test', () => {
         amDai = config.amDai;
         amUsdc = config.amUsdc;
         amUsdt = config.amUsdt;
+        am3crv = config.am3crv;
         holderDAI = await ethers.getSigner(config.holderDAI);
         holderUSDC = await ethers.getSigner(config.holderUSDC);
         holderUSDT = await ethers.getSigner(config.holderUSDT);
@@ -93,16 +95,37 @@ describe('Strategy test', () => {
     });
 
     it('Strategy borrow', async () => {
+        //todo: test failure, all usdt tokens went to curve
         await dai.connect(holderDAI).approve(vault.address, amountDai);
         await usdc.connect(holderDAI).approve(vault.address, amountUsdc);
         await usdt.connect(holderDAI).approve(vault.address, amountUsdt);
 
         await vault.connect(holderDAI).deposit(amountDai, amountUsdc, amountUsdt);
 
-        const balanceUsdtAfterBorrow = await usdt.balanceOf(strategy.address);
+        const balanceUsdtAfterBorrow = Number(await usdt.balanceOf(strategy.address));
 
-        balanceUsdtAfterBorrow.should.satisfy((num) => {
-            if (num > 0) {
+        const DAIfraction = 1e18;
+        const USDCfraction = 1e6;
+        const USDTfraction = 1e6;
+
+        const ammountBorrowUsdt = (amountDai / DAIfraction + amountUsdc / USDCfraction) / 2 * USDTfraction;
+
+        balanceUsdtAfterBorrow.should.equal(ammountBorrowUsdt);
+    });
+
+    it('Strategy receive am3CRV', async () => {
+        await dai.connect(holderDAI).approve(vault.address, amountDai);
+        await usdc.connect(holderDAI).approve(vault.address, amountUsdc);
+        await usdt.connect(holderDAI).approve(vault.address, amountUsdt);
+
+        const balanceStrategyAm3CRVBefore = Number(await am3crv.balanceOf(strategy.address));
+
+        await vault.connect(holderDAI).deposit(amountDai, amountUsdc, amountUsdt);
+
+        const balanceStrategyAm3CRVAfter = Number(await am3crv.balanceOf(strategy.address));
+
+        balanceStrategyAm3CRVAfter.should.satisfy((num) => {
+            if (num > balanceStrategyAm3CRVBefore) {
                 return true;
             } else {
                 return false;
