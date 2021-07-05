@@ -23,6 +23,9 @@ module.exports = {
         MATIC: {
             default: '0x0000000000000000000000000000000000001010',
         },
+        amMATIC: {
+            default: '0x8dF3aad3a84da6b69A4DA8aeC3eA40d9091B2Ac4',
+        },
         amDAI: {
             default: '0x27F8D03b3a2196956ED754baDc28D73be8830A6e',
         },

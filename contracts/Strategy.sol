@@ -126,7 +126,6 @@ contract Strategy {
 
         Coins[Constant.AM_3CRV_TICKER].token.transfer(_userAddr, crvAmount);
         userBalances[_userAddr][Constant.AM_3CRV_TICKER] += crvAmount;
-        this.claimRewards();
     }
 
     function _getAmountBorrow(uint _daiTokenAmount , uint _usdcTokenAmount) internal pure returns(uint){
@@ -148,21 +147,30 @@ contract Strategy {
     }
 
     function claimRewards() external {
-        address[] memory assets = new address[](1);
-        assets[0] = Constant.AM_WMATIC_ADDRESS;
+        address[] memory assets = new address[](3);
+        assets[0] = Constant.AM_DAI_ADDRESS;
+        assets[1] = Constant.AM_USDC_ADDRESS;
+        assets[2] = Constant.AM_USDT_ADDRESS;
+
 
         uint rewardsAmount = contractRewards.getRewardsBalance(assets, address(this));
+
+console.log(rewardsAmount, 'rewards');
         if(rewardsAmount > 0) {
             uint partOfTotalRewards = 0;
 
-            for(uint i=0; i<users.length; i++) {
+            for(uint i = 0; i < users.length; i++) {
                 partOfTotalRewards = userBalances[users[i]][Constant.DAI_TICKER] / totalAssets
                                      + userBalances[users[i]][Constant.USDC_TICKER] / totalAssets
-                                     + userBalances[users[i]][Constant.USDT_TICKER] / totalAssets
-                                     + userBalances[users[i]][Constant.AM_3CRV_TICKER] / totalAssets;
-
-                Coins[Constant.AM_W_MATIC_TICKER].token.transfer(users[i],
-                                                                 partOfTotalRewards * rewardsAmount);
+                                     + userBalances[users[i]][Constant.USDT_TICKER] / totalAssets;
+                                    //  + userBalances[users[i]][Constant.AM_3CRV_TICKER] / totalAssets;
+            console.log(users[i], 'address user');
+            console.log(userBalances[users[i]][Constant.DAI_TICKER]);
+            console.log(totalAssets, 'totalAssets');
+            console.log(partOfTotalRewards, 'partOfTotalRewards');
+            console.log(partOfTotalRewards * rewardsAmount, 'rewards user');
+                // Coins[Constant.AM_W_MATIC_TICKER].token.transfer(users[i],
+                //                                                  partOfTotalRewards * rewardsAmount);
             }
         }
     }

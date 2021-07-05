@@ -12,6 +12,7 @@ describe('Strategy test', () => {
     let dai;
     let usdc;
     let usdt;
+    let amMatic;
     let amDai;
     let amUsdc;
     let amUsdt;
@@ -32,6 +33,7 @@ describe('Strategy test', () => {
         dai = config.dai;
         usdc = config.usdc;
         usdt = config.usdt;
+        amMatic = config.amMatic;
         amDai = config.amDai;
         amUsdc = config.amUsdc;
         amUsdt = config.amUsdt;
@@ -131,5 +133,21 @@ describe('Strategy test', () => {
                 return false;
             }
         });
+    });
+
+    it.only('Strategy claimRewards', async () => {
+        await dai.connect(holderDAI).approve(vault.address, amountDai);
+        await usdc.connect(holderDAI).approve(vault.address, amountUsdc);
+        await usdt.connect(holderDAI).approve(vault.address, amountUsdt);
+
+        await vault.connect(holderDAI).deposit(amountDai, amountUsdc, amountUsdt);
+
+        const minutes = 60;
+        for (let i = 0; i < minutes; i++) {
+            await advanceNBlock();
+        }
+
+        await strategy.connect(holderDAI).claimRewards();
+        console.log(Number(await amMatic.balanceOf(holderDAI.address)));
     });
 });
