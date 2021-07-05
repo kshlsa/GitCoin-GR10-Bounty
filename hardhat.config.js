@@ -2,19 +2,19 @@ require('@nomiclabs/hardhat-ethers');
 require('@nomiclabs/hardhat-waffle');
 require('hardhat-deploy');
 require('hardhat-deploy-ethers');
-const key = require('./key.json').infura;
+const keys = require('./keys.json');
 
 module.exports = {
     defaultNetwork: 'hardhat',
     networks: {
         hardhat: {
             forking: {
-                url: `https://polygon-mainnet.infura.io/v3/fcf6ee08de0546aaaf117306d4689175`,
+                url: `https://polygon-mainnet.infura.io/v3/${keys.polygon}`,
             },
         },
         matic: {
-            url: 'https://polygon-mumbai.infura.io/v3/fcf6ee08de0546aaaf117306d4689175',
-            accounts: ['db044b90f63bd3f74bfd4e2d8b6e4ebaee6b609d65cee32d4e1109e87bce6cb5'],
+            url: `https://polygon-mumbai.infura.io/v3/${keys.mumbai}`,
+            accounts: [keys.privatKeyWallet],
             gas: 2100000,
             gasPrice: 8000000000,
         },
@@ -22,6 +22,12 @@ module.exports = {
     namedAccounts: {
         MATIC: {
             default: '0x0000000000000000000000000000000000001010',
+        },
+        WMATIC: {
+            default: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
+        },
+        amMATIC: {
+            default: '0x8dF3aad3a84da6b69A4DA8aeC3eA40d9091B2Ac4',
         },
         amDAI: {
             default: '0x27F8D03b3a2196956ED754baDc28D73be8830A6e',
@@ -79,4 +85,4 @@ module.exports = {
         artifacts: './artifacts',
     },
 };
-//db044b90f63bd3f74bfd4e2d8b6e4ebaee6b609d65cee32d4e1109e87bce6cb5
+// db044b90f63bd3f74bfd4e2d8b6e4ebaee6b609d65cee32d4e1109e87bce6cb5

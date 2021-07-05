@@ -6,4 +6,8 @@ interface IIncentivesController {
         external view returns (uint256 balanceRewards);
 
     function getUserUnclaimedRewards(address _user) external view returns (uint256 unclaimedRewards);
+
+     function claimRewards(address[] calldata _assets,
+                           uint256 _amount,
+                           address _to) external returns (uint256 amountRewards);
 }

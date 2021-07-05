@@ -11,6 +11,7 @@ exports.setTestContracts = deployments.createFixture(
     async ({deployments, getNamedAccounts, ethers}) => {
         await deployments.fixture('main');
         const {
+            WMATIC,
             amDAI,
             amUSDC,
             amUSDT,
@@ -32,6 +33,7 @@ exports.setTestContracts = deployments.createFixture(
         const dai = await ethers.getContractAt('MockERC20', DAI);
         const usdc = await ethers.getContractAt('MockERC20', USDC);
         const usdt = await ethers.getContractAt('MockERC20', USDT);
+        const wMatic = await ethers.getContractAt('MockERC20', WMATIC);
         const amDai = await ethers.getContractAt('MockERC20', amDAI);
         const amUsdc = await ethers.getContractAt('MockERC20', amUSDC);
         const amUsdt = await ethers.getContractAt('MockERC20', amUSDT);
@@ -43,6 +45,7 @@ exports.setTestContracts = deployments.createFixture(
             dai,
             usdc,
             usdt,
+            wMatic,
             amDai,
             amUsdc,
             amUsdt,

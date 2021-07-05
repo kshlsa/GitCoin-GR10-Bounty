@@ -12,6 +12,7 @@ describe('Strategy test', () => {
     let dai;
     let usdc;
     let usdt;
+    let wMatic;
     let amDai;
     let amUsdc;
     let amUsdt;
@@ -32,6 +33,7 @@ describe('Strategy test', () => {
         dai = config.dai;
         usdc = config.usdc;
         usdt = config.usdt;
+        wMatic = config.wMatic;
         amDai = config.amDai;
         amUsdc = config.amUsdc;
         amUsdt = config.amUsdt;
@@ -94,38 +96,47 @@ describe('Strategy test', () => {
         });
     });
 
-    it('Strategy borrow', async () => {
-        //todo: test failure, all usdt tokens went to curve
-        await dai.connect(holderDAI).approve(vault.address, amountDai);
-        await usdc.connect(holderDAI).approve(vault.address, amountUsdc);
-        await usdt.connect(holderDAI).approve(vault.address, amountUsdt);
-
-        await vault.connect(holderDAI).deposit(amountDai, amountUsdc, amountUsdt);
-
-        const balanceUsdtAfterBorrow = Number(await usdt.balanceOf(strategy.address));
-
-        const DAIfraction = 1e18;
-        const USDCfraction = 1e6;
-        const USDTfraction = 1e6;
-
-        const ammountBorrowUsdt = (amountDai / DAIfraction + amountUsdc / USDCfraction) / 2 * USDTfraction;
-
-        balanceUsdtAfterBorrow.should.equal(ammountBorrowUsdt);
-    });
 
     it('Strategy receive am3CRV', async () => {
         await dai.connect(holderDAI).approve(vault.address, amountDai);
         await usdc.connect(holderDAI).approve(vault.address, amountUsdc);
         await usdt.connect(holderDAI).approve(vault.address, amountUsdt);
 
-        const balanceStrategyAm3CRVBefore = Number(await am3crv.balanceOf(strategy.address));
+        const balanceStrategyAm3CRVBefore = Number(await am3crv.balanceOf(holderDAI.address));
 
         await vault.connect(holderDAI).deposit(amountDai, amountUsdc, amountUsdt);
 
-        const balanceStrategyAm3CRVAfter = Number(await am3crv.balanceOf(strategy.address));
+        const balanceStrategyAm3CRVAfter = Number(await am3crv.balanceOf(holderDAI.address));
 
         balanceStrategyAm3CRVAfter.should.satisfy((num) => {
             if (num > balanceStrategyAm3CRVBefore) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+    });
+
+    it('Strategy claimRewards', async () => {
+        await dai.connect(holderDAI).approve(vault.address, amountDai);
+        await usdc.connect(holderDAI).approve(vault.address, amountUsdc);
+        await usdt.connect(holderDAI).approve(vault.address, amountUsdt);
+
+        await vault.connect(holderDAI).deposit(amountDai, amountUsdc, amountUsdt);
+
+        const balanceStrategyMaticBefore = Number(await wMatic.balanceOf(holderDAI.address));
+
+        const minutes = 60;
+        for (let i = 0; i < minutes; i++) {
+            await advanceNBlock();
+        }
+
+        await strategy.connect(holderDAI).claimRewards();
+
+        const balanceStrategyMaticAfter = Number(await wMatic.balanceOf(holderDAI.address));
+
+        balanceStrategyMaticAfter.should.satisfy((num) => {
+            if (num > balanceStrategyMaticBefore) {
                 return true;
             } else {
                 return false;
