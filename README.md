@@ -53,7 +53,7 @@ __________________________________________
     + You can either: a) add Matic to the matic pool on AAVE and earn an additional APR on that. b) swap for more stables and repeat the whole thing
 
 
-### Scheme
+### The Scheme
 
 ![alt text](https://raw.githubusercontent.com/ForceDAO/bounties/main/gitcoin/img/original.png "Scheme")
 
