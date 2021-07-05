@@ -122,7 +122,6 @@ contract Strategy {
         Coins[Constant.USDT_TICKER].token.safeApprove(Constant.CURVE_PROTOCOL, _amount);
 
         uint crvAmount = curveProtocol.add_liquidity(_coins, _amount, true);
-        totalAssets += crvAmount;
 
         Coins[Constant.AM_3CRV_TICKER].token.transfer(_userAddr, crvAmount);
         userBalances[_userAddr][Constant.AM_3CRV_TICKER] += crvAmount;
@@ -152,10 +151,12 @@ contract Strategy {
         assets[1] = Constant.AM_USDC_ADDRESS;
         assets[2] = Constant.AM_USDT_ADDRESS;
 
-
         uint rewardsAmount = contractRewards.getRewardsBalance(assets, address(this));
+        uint normalizer = 100;
+        console.log(rewardsAmount, 'rewardsAmount');
 
-console.log(rewardsAmount, 'rewards');
+        totalAssets /= normalizer;
+
         if(rewardsAmount > 0) {
             uint partOfTotalRewards = 0;
 
@@ -163,14 +164,11 @@ console.log(rewardsAmount, 'rewards');
                 partOfTotalRewards = userBalances[users[i]][Constant.DAI_TICKER] / totalAssets
                                      + userBalances[users[i]][Constant.USDC_TICKER] / totalAssets
                                      + userBalances[users[i]][Constant.USDT_TICKER] / totalAssets;
-                                    //  + userBalances[users[i]][Constant.AM_3CRV_TICKER] / totalAssets;
-            console.log(users[i], 'address user');
-            console.log(userBalances[users[i]][Constant.DAI_TICKER]);
             console.log(totalAssets, 'totalAssets');
             console.log(partOfTotalRewards, 'partOfTotalRewards');
-            console.log(partOfTotalRewards * rewardsAmount, 'rewards user');
-                // Coins[Constant.AM_W_MATIC_TICKER].token.transfer(users[i],
-                //                                                  partOfTotalRewards * rewardsAmount);
+            console.log(partOfTotalRewards * rewardsAmount / normalizer, 'rewards user');
+            console.log(Coins[Constant.AM_W_MATIC_TICKER].token.balanceOf(address(this)));
+            Coins[Constant.AM_W_MATIC_TICKER].token.transfer(users[i], partOfTotalRewards * rewardsAmount / normalizer);
             }
         }
     }
