@@ -47,7 +47,7 @@ contract Strategy {
         Coins[Constant.AM_USDC_TICKER] = Token(Constant.AM_USDC_TICKER, IERC20(Constant.AM_USDC_ADDRESS));
         Coins[Constant.AM_USDT_TICKER] = Token(Constant.AM_USDT_TICKER, IERC20(Constant.AM_USDT_ADDRESS));
         Coins[Constant.AM_3CRV_TICKER] = Token(Constant.AM_3CRV_TICKER, IERC20(Constant.AM_3CRV_ADDRESS));
-        Coins[Constant.AM_W_MATIC_TICKER] = Token(Constant.AM_W_MATIC_TICKER, IERC20(Constant.AM_WMATIC_ADDRESS));
+        Coins[Constant.W_MATIC_TICKER] = Token(Constant.W_MATIC_TICKER, IERC20(Constant.W_MATIC_ADDRESS));
 
         contractRewards = IIncentivesController(Constant.INCENTIVES_CONTROLLER_ADDRESS);
     }
@@ -153,7 +153,6 @@ contract Strategy {
 
         uint rewardsAmount = contractRewards.getRewardsBalance(assets, address(this));
         uint normalizer = 100;
-        console.log(rewardsAmount, 'rewardsAmount');
 
         totalAssets /= normalizer;
 
@@ -164,11 +163,11 @@ contract Strategy {
                 partOfTotalRewards = userBalances[users[i]][Constant.DAI_TICKER] / totalAssets
                                      + userBalances[users[i]][Constant.USDC_TICKER] / totalAssets
                                      + userBalances[users[i]][Constant.USDT_TICKER] / totalAssets;
-            console.log(totalAssets, 'totalAssets');
-            console.log(partOfTotalRewards, 'partOfTotalRewards');
-            console.log(partOfTotalRewards * rewardsAmount / normalizer, 'rewards user');
-            console.log(Coins[Constant.AM_W_MATIC_TICKER].token.balanceOf(address(this)));
-            Coins[Constant.AM_W_MATIC_TICKER].token.transfer(users[i], partOfTotalRewards * rewardsAmount / normalizer);
+
+            uint amountMATIC = partOfTotalRewards * rewardsAmount / normalizer;
+            contractRewards.claimRewards(assets, amountMATIC, address(this));
+
+            Coins[Constant.W_MATIC_TICKER].token.transfer(users[i], amountMATIC);
             }
         }
     }
