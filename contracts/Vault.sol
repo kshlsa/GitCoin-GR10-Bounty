@@ -46,7 +46,15 @@ contract Vault {
         strategy.depositStablecoins(msg.sender, _daiAmount, _usdcAmount, _usdtAmount);
     }
 
-    function withdraw(uint _daiAmount, uint _usdcAmount, uint _usdtAmount) external {
+    function withdrawAll(uint _amountAm3ctv) external {
+        require(
+            IERC20(Constant.AM_3CRV_ADDRESS).allowance(msg.sender, address(this)) >= _amountAm3ctv,
+        'insufficient funds');
 
+        IERC20(Constant.AM_3CRV_ADDRESS).transferFrom(msg.sender, address(this), _amountAm3ctv);
+        IERC20(Constant.AM_3CRV_ADDRESS).approve(address(strategy), _amountAm3ctv);
+
+
+        strategy.withdraw(msg.sender, _amountAm3ctv);
     }
 }

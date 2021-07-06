@@ -6,4 +6,6 @@ interface IStrategy {
                                 uint _usdcAmount,
                                 uint _usdtAmount,
                                 uint _daiAmount) external;
+
+    function withdraw(address _user, uint _amountAm3ctv) external;
 }
