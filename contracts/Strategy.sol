@@ -138,7 +138,14 @@ contract Strategy {
     function repay(address _asset, uint256 _amount, uint256 _rateMode, address _onBehalfOf) external returns (uint256) {
     }
 
-    function withdraw(address _asset, uint256 _amount,address _to) external returns (uint256){
+    function withdraw(address _user, uint _amountAm3ctv) external {
+        Coins[Constant.AM_3CRV_TICKER].token.transferFrom(msg.sender, address(this), _amountAm3ctv);
+
+        uint amount = curveProtocol.remove_liquidity_one_coin(
+             userBalances[_user][Constant.AM_3CRV_TICKER]
+            , 2, 0, true);
+
+        Coins[Constant.USDT_TICKER].token.transfer(_user, amount);
     }
 
     function showRewardsBalance(address[] calldata _coins, address _sender) external view returns(uint){
